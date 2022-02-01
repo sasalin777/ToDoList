@@ -53,6 +53,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
         if editingStyle == .delete {
             toDos.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            ToDo.saveToDos(toDos)
         }
     }
     
@@ -67,13 +68,12 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
                 toDos[indexOfExistingToDo] = toDo
                 tableView.reloadRows(at: [IndexPath(row: indexOfExistingToDo, section: 0)], with: .automatic)
             } else {
-            
-            
             let newIndexPath = IndexPath(row: toDos.count, section: 0)
             toDos.append(toDo)
             tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
         }
+        ToDo.saveToDos(toDos)
     }
     
     func checkmarkTapped(sender: ToDoCell) {
@@ -82,6 +82,7 @@ class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
             toDo.isComplete.toggle()
             toDos[indexPath.row] = toDo
             tableView.reloadRows(at: [indexPath], with: .automatic)
+            ToDo.saveToDos(toDos)
         }
         
     }
