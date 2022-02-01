@@ -10,7 +10,7 @@ import UIKit
 // UITableViewDelegate (action, behaviours)
 
 
-class ToDoTableViewController: UITableViewController {
+class ToDoTableViewController: UITableViewController, ToDoCellDelegate {
 
     var toDos = [ToDo]()
     override func viewDidLoad() {
@@ -33,12 +33,15 @@ class ToDoTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoCellIdentifier", for: indexPath) as! ToDoCell
         
         let toDo = toDos[indexPath.row]
-        var content = cell.defaultContentConfiguration()
-        content.text = toDo.title
-        cell.contentConfiguration = content
+        //var content = cell.defaultContentConfiguration()
+        //content.text = toDo.title
+        //cell.contentConfiguration = content
+        cell.titleLabel?.text = toDo.title
+        cell.isCompleteButton.isSelected = toDo.isComplete
+        cell.delegate = self
         return cell
     }
     
@@ -52,6 +55,8 @@ class ToDoTableViewController: UITableViewController {
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
+    
+    
     
     @IBAction func unwindToToDoList(segue: UIStoryboardSegue) {
         guard segue.identifier == "saveUnwind" else {return}
@@ -71,10 +76,13 @@ class ToDoTableViewController: UITableViewController {
         }
     }
     
-    
-    
-  
-    
-   
-    
+    func checkmarkTapped(sender: ToDoCell) {
+        if let indexPath = tableView.indexPath(for: sender) {
+            var toDo = toDos[indexPath.row]
+            toDo.isComplete.toggle()
+            toDos[indexPath.row] = toDo
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+        
+    }
 }
